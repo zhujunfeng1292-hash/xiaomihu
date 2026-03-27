@@ -1,4 +1,4 @@
-using UnityEngine;
+using UnityEngine;顶点色都得懂
 
 /// <summary>
 /// 模型围绕中心点旋转控制脚本
