@@ -1,0 +1,46 @@
+using UnityEngine;
+
+/// <summary>
+/// 模型围绕中心点旋转控制脚本
+/// 支持自定义旋转轴、旋转速度和旋转中心点
+/// </summary>
+public class ModelRotateAroundCenter : MonoBehaviour
+{
+    [Header("旋转设置")]
+    [Tooltip("旋转中心点（世界坐标）")]
+    public Transform rotateCenter; // 旋转中心点（可在Inspector面板指定）
+    [Tooltip("旋转速度（度/秒）")]
+    public float rotateSpeed = 30f; // 可调节的旋转速度
+    [Tooltip("旋转轴（默认Y轴）")]
+    public Vector3 rotateAxis = Vector3.up; // 旋转轴（X/Y/Z轴可选）
+
+    // 如果未指定旋转中心，默认使用自身位置作为中心
+    private void Start()
+    {
+        // 容错处理：如果未指定旋转中心，使用物体自身位置作为旋转中心
+        if (rotateCenter == null)
+        {
+            rotateCenter = new GameObject("RotateCenter").transform;
+            rotateCenter.position = transform.position;
+            Debug.LogWarning("未指定旋转中心，已创建默认中心在物体当前位置");
+        }
+    }
+
+    // 每帧更新旋转（使用FixedUpdate更稳定）
+    private void FixedUpdate()
+    {
+        // 围绕指定中心旋转：参数（中心位置，旋转轴，旋转角度）
+        transform.RotateAround(rotateCenter.position, rotateAxis, rotateSpeed * Time.deltaTime);
+    }
+
+    // 场景视图中绘制旋转中心辅助线（方便调试）
+    private void OnDrawGizmos()
+    {
+        if (rotateCenter != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(rotateCenter.position, 0.1f); // 绘制旋转中心红点
+            Gizmos.DrawLine(transform.position, rotateCenter.position); // 绘制物体到中心的连线
+        }
+    }
+}
